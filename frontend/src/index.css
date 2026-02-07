@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a2e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4f46e5;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6366f1;
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-dark {
+  background: rgba(15, 15, 30, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Cosmic card effect */
+.cosmic-card {
+  @apply glass-dark rounded-xl p-6 transition-all duration-300;
+  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.1);
+}
+
+.cosmic-card:hover {
+  box-shadow: 0 12px 48px rgba(99, 102, 241, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animated background */
+@keyframes cosmic-bg {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.cosmic-bg-animated {
+  background-size: 200% 200%;
+  animation: cosmic-bg 15s ease infinite;
+}
+
+/* Button styles */
+.btn-cosmic {
+  @apply px-6 py-3 bg-cosmic-gradient text-white rounded-lg font-semibold;
+  @apply transition-all duration-300 hover:shadow-cosmic;
+}
+
+.btn-nebula {
+  @apply px-6 py-3 bg-nebula-gradient text-white rounded-lg font-semibold;
+  @apply transition-all duration-300 hover:shadow-nebula;
+}
+
+/* Loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
