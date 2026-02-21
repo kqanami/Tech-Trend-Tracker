@@ -9,6 +9,7 @@ from slowapi.errors import RateLimitExceeded
 from app.core.config import settings
 from app.db.database import init_db
 from app.api import router
+from app.api.endpoints import graph, search
 from app.middleware import CacheMiddleware, cache_manager, limiter, custom_rate_limit_handler
 
 # Configure logging
@@ -94,6 +95,24 @@ app.add_exception_handler(RateLimitExceeded, custom_rate_limit_handler)
 
 # Include API routes
 app.include_router(router, prefix="/api/v1")
+app.include_router(graph.router, prefix="/api/v1/graph", tags=["graph"])
+app.include_router(search.router, prefix="/api/v1/search", tags=["search"])
+
+# Include analytics routes
+from app.api.endpoints import analytics
+app.include_router(analytics.router, prefix="/api/v1/analytics", tags=["analytics"])
+
+# Include export routes
+from app.api.endpoints import export
+app.include_router(export.router, prefix="/api/v1/export", tags=["export"])
+
+# Include favorites routes
+from app.api.endpoints import favorites
+app.include_router(favorites.router, prefix="/api/v1", tags=["favorites"])
+
+# Include statistics routes
+from app.api.endpoints import statistics
+app.include_router(statistics.router, prefix="/api/v1/stats", tags=["statistics"])
 
 
 if __name__ == "__main__":

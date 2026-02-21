@@ -1,6 +1,6 @@
 """API routes for Tech Trend Tracker."""
 import logging
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Path
@@ -14,6 +14,8 @@ from app.models.trend import Trend
 from app.models.tag import Tag
 from app.services.techcrunch_scraper import TechCrunchScraper
 from app.services.github_scraper import GitHubScraper
+from app.services.hackernews_scraper import HackerNewsScraper
+from app.services.arxiv_scraper import ArXivScraper
 from app.services.data_processor import DataProcessor
 from app.core.config import settings
 
@@ -66,6 +68,8 @@ async def get_articles(
     db: Session = Depends(get_db)
 ):
     """Get articles with filtering and pagination."""
+    from datetime import datetime
+    
     query = db.query(Article)
     
     if params.source:
@@ -86,6 +90,28 @@ async def get_articles(
             (Article.title.ilike(search_filter)) | 
             (Article.summary.ilike(search_filter))
         )
+    
+    # Date filters
+    if params.start_date:
+        try:
+            start = datetime.fromisoformat(params.start_date)
+            query = query.filter(Article.published_at >= start)
+        except ValueError:
+            pass
+    
+    if params.end_date:
+        try:
+            end = datetime.fromisoformat(params.end_date)
+            query = query.filter(Article.published_at <= end)
+        except ValueError:
+            pass
+    
+    # Sentiment filters
+    if params.min_sentiment is not None:
+        query = query.filter(Article.sentiment_score >= params.min_sentiment)
+    
+    if params.max_sentiment is not None:
+        query = query.filter(Article.sentiment_score <= params.max_sentiment)
     
     total = query.count()
     
@@ -335,16 +361,65 @@ async def trigger_scraping(
         try:
             logger.info("Starting TechCrunch scraping...")
             scraper = TechCrunchScraper()
-            articles = scraper.scrape_all_categories(limit_per_category=request.limit // 3)
+            # Only get recent articles (last 7 days) to avoid duplicates
+            articles = scraper.scrape_all_categories(
+                limit_per_category=request.limit // 3,
+                only_recent=True,
+                days_back=7
+            )
             
+            logger.info(f"📊 Scraped {len(articles)} articles from TechCrunch, checking for new ones...")
+            
+            skipped_count = 0
+            for article_data in articles:
+                result = processor.process_article(article_data)
+                # Only count if result is not None (None means article already exists)
+                if result is not None:
+                    articles_created += 1
+                else:
+                    skipped_count += 1
+            
+            logger.info(f"✅ TechCrunch scraping completed: {articles_created} NEW articles created, {skipped_count} duplicates skipped")
+        except Exception as e:
+            error_msg = f"TechCrunch scraping error: {str(e)}"
+            logger.error(error_msg)
+            errors.append(error_msg)
+    
+    if request.source in ["hackernews", "all"]:
+        try:
+            logger.info("Starting HackerNews scraping...")
+            scraper = HackerNewsScraper()
+            articles = scraper.scrape_latest(limit=request.limit // 2)
+            
+            hn_count = 0
             for article_data in articles:
                 result = processor.process_article(article_data)
                 if result:
+                    hn_count += 1
                     articles_created += 1
             
-            logger.info(f"TechCrunch scraping completed: {articles_created} articles")
+            logger.info(f"HackerNews scraping completed: {hn_count} articles")
         except Exception as e:
-            error_msg = f"TechCrunch scraping error: {str(e)}"
+            error_msg = f"HackerNews scraping error: {str(e)}"
+            logger.error(error_msg)
+            errors.append(error_msg)
+
+    if request.source in ["arxiv", "all"]:
+        try:
+            logger.info("Starting ArXiv scraping...")
+            scraper = ArXivScraper()
+            articles = scraper.scrape_latest(limit=request.limit // 2)
+            
+            arxiv_count = 0
+            for article_data in articles:
+                result = processor.process_article(article_data)
+                if result:
+                    arxiv_count += 1
+                    articles_created += 1
+            
+            logger.info(f"ArXiv scraping completed: {arxiv_count} articles")
+        except Exception as e:
+            error_msg = f"ArXiv scraping error: {str(e)}"
             logger.error(error_msg)
             errors.append(error_msg)
     
@@ -381,4 +456,4 @@ async def trigger_scraping(
     )
 
 
-from typing import List
+

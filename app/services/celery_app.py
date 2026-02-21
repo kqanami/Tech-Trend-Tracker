@@ -29,19 +29,29 @@ celery_app.conf.update(
 
 # Periodic tasks schedule
 celery_app.conf.beat_schedule = {
-    'scrape-techcrunch-every-6-hours': {
+    'scrape-hackernews-every-15-mins': {
+        'task': 'app.services.celery_app.scrape_hackernews_task',
+        'schedule': timedelta(minutes=15),
+        'options': {'queue': 'scraping'}
+    },
+    'scrape-arxiv-every-15-mins': {
+        'task': 'app.services.celery_app.scrape_arxiv_task',
+        'schedule': timedelta(minutes=15),
+        'options': {'queue': 'scraping'}
+    },
+    'scrape-techcrunch-every-15-mins': {
         'task': 'app.services.celery_app.scrape_techcrunch_task',
-        'schedule': timedelta(hours=6),
+        'schedule': timedelta(minutes=15),
         'options': {'queue': 'scraping'}
     },
-    'scrape-github-every-6-hours': {
+    'scrape-github-every-15-mins': {
         'task': 'app.services.celery_app.scrape_github_task',
-        'schedule': timedelta(hours=6),
+        'schedule': timedelta(minutes=15),
         'options': {'queue': 'scraping'}
     },
-    'calculate-trends-hourly': {
+    'calculate-trends-every-15-mins': {
         'task': 'app.services.celery_app.calculate_trends_task',
-        'schedule': timedelta(hours=1),
+        'schedule': timedelta(minutes=15),
         'options': {'queue': 'processing'}
     },
     'cleanup-old-data-daily': {
@@ -50,6 +60,70 @@ celery_app.conf.beat_schedule = {
         'options': {'queue': 'maintenance'}
     },
 }
+
+@celery_app.task(name='app.services.celery_app.scrape_hackernews_task', bind=True)
+def scrape_hackernews_task(self):
+    """Scrape HackerNews stories."""
+    try:
+        from app.db.database import SessionLocal
+        from app.services.hackernews_scraper import HackerNewsScraper
+        from app.services.data_processor import DataProcessor
+        
+        db = SessionLocal()
+        try:
+            logger.info("Starting HackerNews scraping task...")
+            scraper = HackerNewsScraper()
+            processor = DataProcessor(db)
+            
+            # Scrape top 30 stories
+            articles = scraper.scrape_latest(limit=30)
+            articles_created = 0
+            
+            for article_data in articles:
+                result = processor.process_article(article_data)
+                if result:
+                    articles_created += 1
+            
+            db.commit()
+            logger.info(f"HackerNews scraping completed: {articles_created} articles")
+            return {'status': 'success', 'articles_created': articles_created}
+        finally:
+            db.close()
+    except Exception as e:
+        logger.error(f"HackerNews scraping error: {e}")
+        raise
+
+@celery_app.task(name='app.services.celery_app.scrape_arxiv_task', bind=True)
+def scrape_arxiv_task(self):
+    """Scrape ArXiv papers."""
+    try:
+        from app.db.database import SessionLocal
+        from app.services.arxiv_scraper import ArXivScraper
+        from app.services.data_processor import DataProcessor
+        
+        db = SessionLocal()
+        try:
+            logger.info("Starting ArXiv scraping task...")
+            scraper = ArXivScraper()
+            processor = DataProcessor(db)
+            
+            # Scrape latest 20 papers
+            articles = scraper.scrape_latest(limit=20)
+            articles_created = 0
+            
+            for article_data in articles:
+                result = processor.process_article(article_data)
+                if result:
+                    articles_created += 1
+            
+            db.commit()
+            logger.info(f"ArXiv scraping completed: {articles_created} articles")
+            return {'status': 'success', 'articles_created': articles_created}
+        finally:
+            db.close()
+    except Exception as e:
+        logger.error(f"ArXiv scraping error: {e}")
+        raise
 
 
 @celery_app.task(name='app.services.celery_app.scrape_techcrunch_task', bind=True)
@@ -66,16 +140,23 @@ def scrape_techcrunch_task(self):
             scraper = TechCrunchScraper()
             processor = DataProcessor(db)
             
-            articles = scraper.scrape_all_categories(limit_per_category=10)
+            # Only get recent articles (last 7 days) to avoid duplicates
+            articles = scraper.scrape_all_categories(limit_per_category=10, only_recent=True, days_back=7)
             articles_created = 0
             
+            logger.info(f"📊 Scraped {len(articles)} articles, checking for new ones...")
+            
+            skipped_count = 0
             for article_data in articles:
                 result = processor.process_article(article_data)
-                if result:
+                # Only count if result is not None (None means article already exists)
+                if result is not None:
                     articles_created += 1
+                else:
+                    skipped_count += 1
             
             db.commit()
-            logger.info(f"TechCrunch scraping completed: {articles_created} articles")
+            logger.info(f"✅ TechCrunch scraping completed: {articles_created} NEW articles created, {skipped_count} duplicates skipped")
             return {'status': 'success', 'articles_created': articles_created}
         finally:
             db.close()

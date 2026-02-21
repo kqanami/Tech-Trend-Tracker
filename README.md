@@ -292,8 +292,6 @@ npm run build -- --analyze
 5. Запустить с Nginx: `docker-compose up -d`
 6. Frontend доступен через Nginx на порту 80
 
-## 📞 Поддержка
-
 - Frontend: http://localhost:3000
 - API Docs: http://localhost:8000/docs
 - Flower (Celery): http://localhost:5555

@@ -2,6 +2,7 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, Float, Index
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+from pgvector.sqlalchemy import Vector
 from app.db.database import Base
 
 
@@ -25,6 +26,8 @@ class Article(Base):
     language = Column(String(10), default="en")
     is_processed = Column(Boolean, default=False)
     sentiment_score = Column(Float, nullable=True)
+    technical_analysis = Column(Text, nullable=True)
+    embedding = Column(Vector(768))
     
     # Relationships
     tags = relationship("Tag", secondary="article_tags", back_populates="articles")
@@ -50,5 +53,6 @@ class Article(Base):
             "category": self.category,
             "image_url": self.image_url,
             "sentiment_score": self.sentiment_score,
+            "technical_analysis": self.technical_analysis,
             "tags": [tag.name for tag in self.tags] if self.tags else []
         }

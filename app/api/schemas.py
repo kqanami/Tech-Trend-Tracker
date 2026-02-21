@@ -1,6 +1,6 @@
 """Pydantic schemas for API requests and responses."""
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from datetime import datetime
 
 
@@ -45,6 +45,10 @@ class ArticleFilterParams(PaginationParams):
     author: Optional[str] = None
     tag: Optional[str] = None
     search: Optional[str] = None
+    start_date: Optional[str] = None  # YYYY-MM-DD
+    end_date: Optional[str] = None  # YYYY-MM-DD
+    min_sentiment: Optional[float] = None
+    max_sentiment: Optional[float] = None
 
 
 class GitHubRepoResponse(BaseModel):
@@ -140,3 +144,23 @@ class HealthCheck(BaseModel):
     version: str
     database: str
     timestamp: datetime
+
+
+class GraphNode(BaseModel):
+    id: str
+    val: int
+    group: str
+    category: Optional[str] = "general"
+
+
+class GraphLink(BaseModel):
+    source: str
+    target: str
+    value: int
+
+
+class GraphDataResponse(BaseModel):
+    nodes: List[GraphNode]
+    links: List[GraphLink]
+    total_nodes: int
+    total_links: int

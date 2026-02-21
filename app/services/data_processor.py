@@ -23,16 +23,70 @@ class DataProcessor:
         from app.services.ml_analyzer import MLAnalyzer
         self.ml_analyzer = MLAnalyzer()
     
+    def _normalize_url_for_comparison(self, url: str) -> str:
+        """Normalize URL for comparison (remove query params, trailing slashes)."""
+        if not url:
+            return ""
+        # Remove query parameters and fragments
+        url = url.split('?')[0].split('#')[0]
+        # Remove trailing slash
+        url = url.rstrip('/')
+        # Convert to lowercase for comparison
+        return url.lower()
+    
+    def _extract_url_slug(self, url: str) -> str:
+        """Extract the last meaningful part of URL for comparison."""
+        if not url:
+            return ""
+        # Get the last part of URL path
+        parts = url.rstrip('/').split('/')
+        # Get last non-empty part
+        for part in reversed(parts):
+            if part and part not in ['', 'techcrunch.com', 'www.techcrunch.com']:
+                # Remove common suffixes
+                slug = part.split('.')[0]  # Remove .html, .php, etc
+                return slug.lower()
+        return ""
+    
     def process_article(self, article_data: Dict) -> Optional[Article]:
         """Process and save a single article."""
         try:
-            existing = self.db.query(Article).filter(
-                Article.url == article_data['url']
-            ).first()
+            article_url = article_data.get('url', '')
+            if not article_url:
+                logger.warning("Article has no URL, skipping")
+                return None
+            
+            # Normalize URL for comparison
+            normalized_url = self._normalize_url_for_comparison(article_url)
+            url_slug = self._extract_url_slug(article_url)
+            
+            # Check for existing article - multiple strategies
+            existing = None
+            
+            # Strategy 1: Exact match with normalization
+            all_articles = self.db.query(Article).filter(
+                Article.source == article_data.get('source', 'techcrunch')
+            ).all()
+            
+            for art in all_articles:
+                art_normalized = self._normalize_url_for_comparison(art.url)
+                art_slug = self._extract_url_slug(art.url)
+                
+                # Exact match
+                if art_normalized == normalized_url:
+                    existing = art
+                    break
+                
+                # Slug match (for URLs with different query params)
+                if url_slug and art_slug and url_slug == art_slug and len(url_slug) > 10:
+                    existing = art
+                    break
             
             if existing:
-                logger.debug(f"Article already exists: {article_data['url']}")
-                return existing
+                logger.info(f"⏭️  SKIPPED (duplicate): {article_data.get('title', '')[:60]}... | Existing ID: {existing.id}")
+                return None  # Return None to indicate it's not new
+            
+            logger.info(f"✅ NEW article found: {article_data.get('title', '')[:60]}...")
             
             title = self.text_processor.normalize_text(article_data.get('title'))
             summary = self.text_processor.normalize_text(article_data.get('summary'), max_length=1000)
@@ -46,11 +100,14 @@ class DataProcessor:
             
             tag_names = self.text_processor.extract_tags(f"{title} {summary}")
             # Add ML-extracted keywords as tags
-            tag_names.extend(ml_results.get('keywords', [])[:5])
-            tag_names = list(set(tag_names))  # Remove duplicates
+            tag_names.update(ml_results.get('keywords', [])[:5])
+            tag_names = list(tag_names)  # Convert to list
             
             # Use ML category if article category not provided
             category = article_data.get('category') or ml_results.get('category', 'General')
+            
+            # Generate embedding
+            embedding = self.ml_analyzer.generate_embedding(f"{title} {summary}")
             
             article = Article(
                 title=title,
@@ -64,6 +121,8 @@ class DataProcessor:
                 image_url=article_data.get('image_url'),
                 language=article_data.get('language', 'en'),
                 sentiment_score=ml_results.get('sentiment_score', 0.0),
+                technical_analysis=ml_results.get('technical_analysis'),
+                embedding=embedding,
                 is_processed=True
             )
             
@@ -76,7 +135,7 @@ class DataProcessor:
             self.db.commit()
             self.db.refresh(article)
             
-            logger.info(f"Created article: {article.title[:50]}...")
+            logger.info(f"💾 SAVED new article: {article.title[:60]}... | ID: {article.id}")
             return article
             
         except Exception as e:
@@ -189,8 +248,10 @@ class DataProcessor:
     def calculate_trends(self) -> List[Trend]:
         """Calculate trending technologies based on articles and repos."""
         from sqlalchemy import func
+        from app.services.trend_analyzer import TrendAnalyzer
         
         trends = []
+        analyzer = TrendAnalyzer(self.db)
         
         try:
             # Get tag counts from articles
@@ -217,6 +278,11 @@ class DataProcessor:
                 )
                 if trend:
                     trends.append(trend)
+                    # Save snapshot for history tracking
+                    try:
+                        analyzer.save_trend_snapshot(trend)
+                    except Exception as e:
+                        logger.warning(f"Failed to save snapshot for trend {trend.id}: {e}")
             
             # Process languages as trends
             for language, repo_count, total_score in language_counts:
@@ -230,6 +296,11 @@ class DataProcessor:
                     )
                     if trend:
                         trends.append(trend)
+                        # Save snapshot for history tracking
+                        try:
+                            analyzer.save_trend_snapshot(trend)
+                        except Exception as e:
+                            logger.warning(f"Failed to save snapshot for trend {trend.id}: {e}")
             
             self.db.commit()
             logger.info(f"Calculated {len(trends)} trends")

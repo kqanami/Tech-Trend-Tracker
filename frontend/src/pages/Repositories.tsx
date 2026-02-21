@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { repositoriesAPI } from '../api/client'
-import { Search, Star, GitFork, Eye, Code, ExternalLink } from 'lucide-react'
+import { Search, Star, GitFork, ExternalLink, Github, Code, Users } from 'lucide-react'
 
 export default function Repositories() {
     const [page, setPage] = useState(1)
     const [search, setSearch] = useState('')
-    const [language, setLanguage] = useState('')
+    const [language, setLanguage] = useState('All')
 
     const { data, isLoading } = useQuery({
         queryKey: ['repositories', page, search, language],
@@ -15,194 +15,166 @@ export default function Repositories() {
                 page,
                 page_size: 12,
                 search: search || undefined,
-                language: language || undefined,
+                language: language === 'All' ? undefined : language,
             })
             return response.data
         },
     })
 
-    const { data: languages } = useQuery({
-        queryKey: ['repo-languages'],
-        queryFn: async () => {
-            const response = await repositoriesAPI.getLanguages()
-            return response.data
-        },
-    })
-
     return (
-        <div className="space-y-6">
+        <div className="space-y-12 animate-in fade-in slide-in-from-right-4 duration-700">
             {/* Header */}
-            <div className="text-center space-y-2">
-                <h1 className="text-4xl font-bold gradient-text">GitHub Repositories</h1>
-                <p className="text-gray-400">Trending open-source projects</p>
+            <div className="relative text-center py-6">
+                <h1 className="text-5xl font-extrabold gradient-text tracking-tight flex items-center justify-center gap-4">
+                    <Github className="w-12 h-12" />
+                    Code Horizon
+                </h1>
+                <p className="mt-4 text-gray-400 font-light max-w-2xl mx-auto italic">Mapping the most influential codebases across the GitHub galaxy with deep-tech telemetry.</p>
             </div>
 
             {/* Filters */}
-            <div className="cosmic-card">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {/* Search */}
-                    <div className="md:col-span-2 relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <div className="cosmic-card glass-dark sticky top-4 z-20">
+                <div className="flex flex-col md:flex-row gap-6">
+                    <div className="relative flex-1 group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-nebula-400 transition-colors" />
                         <input
                             type="text"
-                            placeholder="Search repositories..."
+                            placeholder="Search code clusters..."
+                            className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-nebula-500/50 focus:border-nebula-500/50 text-white placeholder-gray-500 transition-all font-medium"
                             value={search}
                             onChange={(e) => {
                                 setSearch(e.target.value)
                                 setPage(1)
                             }}
-                            className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-cosmic-500 text-white placeholder-gray-500"
                         />
                     </div>
-
-                    {/* Language Filter */}
-                    <select
-                        value={language}
-                        onChange={(e) => {
-                            setLanguage(e.target.value)
-                            setPage(1)
-                        }}
-                        className="px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-cosmic-500 text-white"
-                    >
-                        <option value="">All Languages</option>
-                        {languages?.map((lang) => (
-                            <option key={lang} value={lang} className="bg-space-900">
-                                {lang}
-                            </option>
-                        ))}
-                    </select>
+                    <div className="relative group min-w-[200px]">
+                        <Code className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+                        <select
+                            className="w-full pl-10 pr-8 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-nebula-500/50 text-white appearance-none transition-all font-medium cursor-pointer"
+                            value={language}
+                            onChange={(e) => {
+                                setLanguage(e.target.value)
+                                setPage(1)
+                            }}
+                        >
+                            <option value="All">All Tech Stacks</option>
+                            <option value="Python">Python Ops</option>
+                            <option value="TypeScript">TypeScript Lab</option>
+                            <option value="JavaScript">ECMAScript Base</option>
+                            <option value="Go">Go Systems</option>
+                            <option value="Rust">Rust Mesh</option>
+                            <option value="C++">C++ Core</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
-            {/* Loading */}
-            {isLoading && (
-                <div className="flex justify-center py-12">
-                    <div className="w-12 h-12 border-4 border-nebula-500 border-t-transparent rounded-full spinner" />
+            {isLoading ? (
+                <div className="flex flex-col items-center justify-center py-32 space-y-4">
+                    <div className="w-16 h-16 border-4 border-nebula-500/30 border-t-nebula-500 rounded-full animate-spin shadow-nebula" />
+                    <p className="text-nebula-400 font-bold animate-pulse">Scanning repository manifolds...</p>
                 </div>
-            )}
-
-            {/* Repositories Grid */}
-            {!isLoading && data && (
+            ) : (
                 <>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {data.items.map((repo) => (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-20">
+                        {data?.items.map((repo) => (
                             <div
                                 key={repo.id}
-                                className="cosmic-card group cursor-pointer"
+                                className="cosmic-card flex flex-col group relative overflow-hidden"
                             >
-                                {/* Header */}
-                                <div className="flex items-start justify-between mb-4">
-                                    <div className="flex-1">
-                                        <h3 className="text-lg font-bold text-white group-hover:text-nebula-300 transition-colors mb-1">
-                                            {repo.name}
-                                        </h3>
-                                        <p className="text-sm text-gray-400">{repo.owner}</p>
-                                    </div>
-                                    <a
-                                        href={repo.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-nebula-400 hover:text-nebula-300 transition-colors"
-                                        onClick={(e) => e.stopPropagation()}
-                                    >
-                                        <ExternalLink className="w-5 h-5" />
-                                    </a>
-                                </div>
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-nebula-500/5 blur-3xl rounded-full" />
 
-                                {/* Description */}
-                                {repo.description && (
-                                    <p className="text-sm text-gray-300 mb-4 line-clamp-2">
-                                        {repo.description}
-                                    </p>
-                                )}
-
-                                {/* Stats */}
-                                <div className="flex items-center gap-4 mb-4 text-sm text-gray-400">
-                                    <div className="flex items-center gap-1">
-                                        <Star className="w-4 h-4 text-yellow-400" />
-                                        <span>{repo.stars.toLocaleString()}</span>
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <GitFork className="w-4 h-4" />
-                                        <span>{repo.forks.toLocaleString()}</span>
-                                    </div>
-                                    {repo.language && (
-                                        <div className="flex items-center gap-1">
-                                            <Code className="w-4 h-4" />
-                                            <span>{repo.language}</span>
+                                <div className="flex-1">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <span className="px-3 py-1 bg-nebula-500/10 text-nebula-300 text-[10px] font-extrabold uppercase tracking-widest rounded border border-nebula-500/20">
+                                            {repo.language || 'Unknown Stack'}
+                                        </span>
+                                        <div className="flex items-center gap-1.5 text-xs font-bold text-gray-300">
+                                            <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
+                                            {repo.stars.toLocaleString()}
                                         </div>
-                                    )}
-                                </div>
-
-                                {/* Topics */}
-                                {repo.topics && repo.topics.length > 0 && (
-                                    <div className="flex flex-wrap gap-2 mb-4">
-                                        {JSON.parse(repo.topics).slice(0, 5).map((topic: string) => (
-                                            <span
-                                                key={topic}
-                                                className="text-xs bg-nebula-500/10 text-nebula-300 px-2 py-1 rounded-full"
-                                            >
-                                                {topic}
-                                            </span>
-                                        ))}
                                     </div>
-                                )}
 
-                                {/* Trending Score */}
-                                <div className="flex items-center justify-between">
-                                    <span className="text-xs text-gray-500">Trending Score</span>
-                                    <span className="text-sm font-bold text-nebula-400">
-                                        {repo.trending_score.toFixed(1)}
-                                    </span>
-                                </div>
-                                <div className="mt-2 h-2 bg-gray-700 rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-nebula-gradient"
-                                        style={{ width: `${Math.min(repo.trending_score, 100)}%` }}
-                                    />
-                                </div>
+                                    <h2 className="text-xl font-bold text-white mb-2 leading-tight group-hover:text-nebula-400 transition-colors line-clamp-1">
+                                        {repo.full_name}
+                                    </h2>
 
-                                {/* Stars Today */}
-                                {repo.stars_today && repo.stars_today > 0 && (
-                                    <div className="mt-3 text-xs text-green-400 flex items-center gap-1">
-                                        <Star className="w-3 h-3" />
-                                        +{repo.stars_today} stars today
+                                    <p className="text-sm text-gray-400 line-clamp-3 mb-6 leading-relaxed flex-1 italic">
+                                        {repo.description || 'No project description available in the registry.'}
+                                    </p>
+
+                                    <div className="grid grid-cols-2 gap-4 mb-8">
+                                        <div className="p-3 bg-white/5 border border-white/5 rounded-xl group-hover:bg-white/10 transition-colors">
+                                            <div className="flex items-center gap-2 text-gray-500 mb-1">
+                                                <GitFork className="w-3 h-3" />
+                                                <span className="text-[10px] font-bold uppercase tracking-tight">Forks</span>
+                                            </div>
+                                            <div className="text-lg font-bold text-white">{repo.forks.toLocaleString()}</div>
+                                        </div>
+                                        <div className="p-3 bg-white/5 border border-white/5 rounded-xl group-hover:bg-white/10 transition-colors">
+                                            <div className="flex items-center gap-2 text-gray-500 mb-1">
+                                                <Users className="w-3 h-3" />
+                                                <span className="text-[10px] font-bold uppercase tracking-tight">Issues</span>
+                                            </div>
+                                            <div className="text-lg font-bold text-white">{repo.open_issues.toLocaleString()}</div>
+                                        </div>
                                     </div>
-                                )}
+                                </div>
+
+                                <div className="pt-6 border-t border-white/5 space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <div className="space-y-1 flex-1 pr-10">
+                                            <div className="flex items-center justify-between text-[10px] font-extrabold uppercase tracking-widest mb-1.5">
+                                                <span className="text-gray-500">Momentum Engine</span>
+                                                <span className="text-nebula-400">{repo.trending_score.toFixed(1)} Pts</span>
+                                            </div>
+                                            <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                                                <div
+                                                    className="h-full bg-gradient-to-r from-nebula-600 to-pink-500 opacity-80 transition-all duration-1000 shadow-nebula"
+                                                    style={{ width: `${Math.min(repo.trending_score, 100)}%` }}
+                                                />
+                                            </div>
+                                        </div>
+                                        <a
+                                            href={repo.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="bg-nebula-500/10 hover:bg-nebula-500/20 p-2.5 rounded-xl border border-nebula-500/30 text-nebula-400 transition-all hover:scale-110 shadow-lg"
+                                        >
+                                            <ExternalLink className="w-5 h-5" />
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         ))}
                     </div>
 
                     {/* Pagination */}
-                    {data.pages > 1 && (
-                        <div className="flex justify-center items-center gap-2">
+                    {data && data.pages > 1 && (
+                        <div className="flex justify-center items-center gap-6 py-12 border-t border-white/5">
                             <button
-                                onClick={() => setPage(page - 1)}
+                                onClick={() => setPage(p => Math.max(1, p - 1))}
                                 disabled={!data.has_prev}
-                                className="px-4 py-2 bg-white/5 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors"
+                                className="px-6 py-2 bg-white/5 border border-white/10 rounded-xl disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10 hover:border-white/20 transition-all font-bold text-sm"
                             >
                                 Previous
                             </button>
-                            <span className="text-gray-400">
-                                Page {data.page} of {data.pages}
-                            </span>
+                            <div className="flex items-center gap-2">
+                                <span className="text-gray-500 text-xs font-bold uppercase tracking-widest">Sector</span>
+                                <span className="text-nebula-400 font-black text-lg">{data.page}</span>
+                                <span className="text-gray-500 text-xs font-bold uppercase tracking-widest">of {data.pages}</span>
+                            </div>
                             <button
-                                onClick={() => setPage(page + 1)}
+                                onClick={() => setPage(p => p + 1)}
                                 disabled={!data.has_next}
-                                className="px-4 py-2 bg-white/5 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors"
+                                className="px-6 py-2 bg-white/5 border border-white/10 rounded-xl disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10 hover:border-white/20 transition-all font-bold text-sm"
                             >
                                 Next
                             </button>
                         </div>
                     )}
                 </>
-            )}
-
-            {/* Empty State */}
-            {!isLoading && data && data.items.length === 0 && (
-                <div className="text-center py-12">
-                    <p className="text-gray-400">No repositories found</p>
-                </div>
             )}
         </div>
     )

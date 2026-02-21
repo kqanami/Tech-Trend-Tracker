@@ -1,0 +1,272 @@
+﻿docker :     return ru
+nner.run(main)
+строка:1 знак:1
++ docker logs tech_tre
+nd_app --tail 80 2>&1 
+| Out-File -FilePath "
+d:\te ...
++ ~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo    
+          : NotSpeci  
+  fied: (    return   
+  runner.run(main)    
+:String) [], Remo    t
+eException
+    + FullyQualifiedE 
+   rrorId : NativeCo  
+  mmandError
+ 
+           ^^^^^^^^^^^
+^^^^^
+  File "/usr/local/lib
+/python3.11/asyncio/ru
+nners.py", line 118, i
+n run
+    return self._loop.
+run_until_complete(tas
+k)
+           ^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
+^^
+  File "uvloop/loop.py
+x", line 1518, in uvlo
+op.loop.Loop.run_until
+_complete
+  File "/usr/local/lib
+/python3.11/site-packa
+ges/uvicorn/server.py"
+, line 69, in serve
+    config.load()
+  File "/usr/local/lib
+/python3.11/site-packa
+ges/uvicorn/config.py"
+, line 458, in load
+    self.loaded_app = 
+import_from_string(sel
+f.app)
+                      
+^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^
+  File "/usr/local/lib
+/python3.11/site-packa
+ges/uvicorn/importer.p
+y", line 21, in import
+_from_string
+    module = importlib
+.import_module(module_
+str)
+             ^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
+^^^^
+  File "/usr/local/lib
+/python3.11/importlib/
+__init__.py", line 126
+, in import_module
+    return _bootstrap.
+_gcd_import(name[level
+:], package, level)
+           ^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
+  File "<frozen import
+lib._bootstrap>", line
+ 1204, in _gcd_import
+  File "<frozen import
+lib._bootstrap>", line
+ 1176, in _find_and_lo
+ad
+  File "<frozen import
+lib._bootstrap>", line
+ 1147, in _find_and_lo
+ad_unlocked
+  File "<frozen import
+lib._bootstrap>", line
+ 690, in _load_unlocke
+d
+  File "<frozen import
+lib._bootstrap_externa
+l>", line 940, in exec
+_module
+  File "<frozen import
+lib._bootstrap>", line
+ 241, in _call_with_fr
+ames_removed
+  File "/app/app/main.
+py", line 11, in <modu
+le>
+    from app.api impor
+t router
+  File "/app/app/api/_
+_init__.py", line 1, i
+n <module>
+    from .routes impor
+t router
+  File "/app/app/api/r
+outes.py", line 11, in
+ <module>
+    from app.models.ar
+ticle import Article
+  File "/app/app/model
+s/__init__.py", line 4
+, in <module>
+    from .trend_histor
+y import TrendHistory
+ImportError: cannot im
+port name 'TrendHistor
+y' from 'app.models.tr
+end_history' (/app/app
+/models/trend_history.
+py)
+INFO:     Stopping rel
+oader process [1]
+INFO:     Will watch f
+or changes in these di
+rectories: ['/app']
+INFO:     Uvicorn runn
+ing on http://0.0.0.0:
+8000 (Press CTRL+C to 
+quit)
+INFO:     Started relo
+ader process [1] using
+ WatchFiles
+Process SpawnProcess-1
+:
+Traceback (most recent
+ call last):
+  File "/usr/local/lib
+/python3.11/multiproce
+ssing/process.py", lin
+e 314, in _bootstrap
+    self.run()
+  File "/usr/local/lib
+/python3.11/multiproce
+ssing/process.py", lin
+e 108, in run
+    self._target(*self
+._args, **self._kwargs
+)
+  File "/usr/local/lib
+/python3.11/site-packa
+ges/uvicorn/_subproces
+s.py", line 78, in sub
+process_started
+    target(sockets=soc
+kets)
+  File "/usr/local/lib
+/python3.11/site-packa
+ges/uvicorn/server.py"
+, line 62, in run
+    return asyncio.run
+(self.serve(sockets=so
+ckets))
+           ^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^
+  File "/usr/local/lib
+/python3.11/asyncio/ru
+nners.py", line 190, i
+n run
+    return runner.run(
+main)
+           ^^^^^^^^^^^
+^^^^^
+  File "/usr/local/lib
+/python3.11/asyncio/ru
+nners.py", line 118, i
+n run
+    return self._loop.
+run_until_complete(tas
+k)
+           ^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
+^^
+  File "uvloop/loop.py
+x", line 1518, in uvlo
+op.loop.Loop.run_until
+_complete
+  File "/usr/local/lib
+/python3.11/site-packa
+ges/uvicorn/server.py"
+, line 69, in serve
+    config.load()
+  File "/usr/local/lib
+/python3.11/site-packa
+ges/uvicorn/config.py"
+, line 458, in load
+    self.loaded_app = 
+import_from_string(sel
+f.app)
+                      
+^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^
+  File "/usr/local/lib
+/python3.11/site-packa
+ges/uvicorn/importer.p
+y", line 21, in import
+_from_string
+    module = importlib
+.import_module(module_
+str)
+             ^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
+^^^^
+  File "/usr/local/lib
+/python3.11/importlib/
+__init__.py", line 126
+, in import_module
+    return _bootstrap.
+_gcd_import(name[level
+:], package, level)
+           ^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
+  File "<frozen import
+lib._bootstrap>", line
+ 1204, in _gcd_import
+  File "<frozen import
+lib._bootstrap>", line
+ 1176, in _find_and_lo
+ad
+  File "<frozen import
+lib._bootstrap>", line
+ 1147, in _find_and_lo
+ad_unlocked
+  File "<frozen import
+lib._bootstrap>", line
+ 690, in _load_unlocke
+d
+  File "<frozen import
+lib._bootstrap_externa
+l>", line 940, in exec
+_module
+  File "<frozen import
+lib._bootstrap>", line
+ 241, in _call_with_fr
+ames_removed
+  File "/app/app/main.
+py", line 11, in <modu
+le>
+    from app.api impor
+t router
+  File "/app/app/api/_
+_init__.py", line 1, i
+n <module>
+    from .routes impor
+t router
+  File "/app/app/api/r
+outes.py", line 11, in
+ <module>
+    from app.models.ar
+ticle import Article
+  File "/app/app/model
+s/__init__.py", line 4
+, in <module>
+    from .trend_histor
+y import TrendHistory
+ImportError: cannot im
+port name 'TrendHistor
+y' from 'app.models.tr
+end_history' (/app/app
+/models/trend_history.
+py)

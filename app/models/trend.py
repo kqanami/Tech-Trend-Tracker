@@ -1,5 +1,6 @@
 """Trend model for tracking technology trends over time."""
 from sqlalchemy import Column, Integer, String, Text, DateTime, Float, Index
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.db.database import Base
 
@@ -15,6 +16,10 @@ class Trend(Base):
     description = Column(Text, nullable=True)
     category = Column(String(100), nullable=False, index=True)
     subcategory = Column(String(100), nullable=True)
+
+    # Relationships
+    history = relationship("TrendHistory", back_populates="trend", cascade="all, delete-orphan")
+
     mention_count = Column(Integer, default=0)
     article_count = Column(Integer, default=0)
     repo_count = Column(Integer, default=0)

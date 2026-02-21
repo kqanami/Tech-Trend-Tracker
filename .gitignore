@@ -20,6 +20,8 @@ wheels/
 .installed.cfg
 *.egg
 
+
+frontend/node_modules
 # Virtual Environment
 venv/
 ENV/
@@ -27,6 +29,7 @@ env/
 .venv
 
 # Environment Variables
+.env
 .env.local
 .env.*.local
 

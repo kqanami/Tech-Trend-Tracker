@@ -42,6 +42,9 @@ class Settings:
     # GitHub API
     GITHUB_TOKEN: Optional[str] = os.getenv("GITHUB_TOKEN")
     
+    # OpenAI API
+    OPENAI_API_KEY: Optional[str] = os.getenv("OPENAI_API_KEY")
+    
     # Scraping
     REQUEST_DELAY: float = 1.5
     MAX_RETRIES: int = 3
