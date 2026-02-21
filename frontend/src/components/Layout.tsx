@@ -53,7 +53,7 @@ export default function Layout({ children }: LayoutProps) {
         <div className="relative min-h-screen">
             {/* Header */}
             <header className="sticky top-0 z-50 glass-dark border-b border-white/10">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16 gap-4">
 
                         {/* Logo */}
@@ -78,8 +78,8 @@ export default function Layout({ children }: LayoutProps) {
                                         key={item.name}
                                         to={item.href}
                                         className={`flex items-center gap-1.5 px-3 py-2 rounded-xl transition-all duration-200 text-sm font-semibold whitespace-nowrap ${isActive
-                                                ? 'bg-white/10 text-white shadow-cosmic border border-white/10'
-                                                : 'text-gray-400 hover:text-white hover:bg-white/5'
+                                            ? 'bg-white/10 text-white shadow-cosmic border border-white/10'
+                                            : 'text-gray-400 hover:text-white hover:bg-white/5'
                                             }`}
                                     >
                                         <Icon className="w-4 h-4 shrink-0" />
@@ -93,8 +93,8 @@ export default function Layout({ children }: LayoutProps) {
                                 <button
                                     onClick={() => setMoreOpen(v => !v)}
                                     className={`flex items-center gap-1.5 px-3 py-2 rounded-xl transition-all duration-200 text-sm font-semibold whitespace-nowrap ${isMoreActive || moreOpen
-                                            ? 'bg-white/10 text-white shadow-cosmic border border-white/10'
-                                            : 'text-gray-400 hover:text-white hover:bg-white/5'
+                                        ? 'bg-white/10 text-white shadow-cosmic border border-white/10'
+                                        : 'text-gray-400 hover:text-white hover:bg-white/5'
                                         }`}
                                 >
                                     <MoreHorizontal className="w-4 h-4 shrink-0" />
@@ -115,8 +115,8 @@ export default function Layout({ children }: LayoutProps) {
                                                         to={item.href}
                                                         onClick={() => setMoreOpen(false)}
                                                         className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 text-sm font-semibold ${isActive
-                                                                ? 'bg-cosmic-500/20 text-cosmic-300 border border-cosmic-500/20'
-                                                                : 'text-gray-400 hover:text-white hover:bg-white/5'
+                                                            ? 'bg-cosmic-500/20 text-cosmic-300 border border-cosmic-500/20'
+                                                            : 'text-gray-400 hover:text-white hover:bg-white/5'
                                                             }`}
                                                     >
                                                         <Icon className="w-4 h-4 shrink-0" />
@@ -153,8 +153,8 @@ export default function Layout({ children }: LayoutProps) {
                                         to={item.href}
                                         onClick={() => setMobileMenuOpen(false)}
                                         className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all text-sm font-semibold ${isActive
-                                                ? 'bg-cosmic-500/20 text-cosmic-300 border border-cosmic-500/20'
-                                                : 'text-gray-300 hover:bg-white/5 hover:text-white'
+                                            ? 'bg-cosmic-500/20 text-cosmic-300 border border-cosmic-500/20'
+                                            : 'text-gray-300 hover:bg-white/5 hover:text-white'
                                             }`}
                                     >
                                         <Icon className="w-4 h-4 shrink-0" />
@@ -168,13 +168,13 @@ export default function Layout({ children }: LayoutProps) {
             </header>
 
             {/* Main Content */}
-            <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <main className="relative z-10 max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {children}
             </main>
 
             {/* Footer */}
             <footer className="relative z-10 mt-auto border-t border-white/10 glass-dark">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     <div className="flex flex-col md:flex-row items-center justify-between">
                         <p className="text-gray-400 text-sm">
                             © 2026 Tech Trend Tracker · Cosmic Edition v2.0
