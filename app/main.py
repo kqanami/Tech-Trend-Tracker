@@ -98,6 +98,10 @@ app.include_router(router, prefix="/api/v1")
 app.include_router(graph.router, prefix="/api/v1/graph", tags=["graph"])
 app.include_router(search.router, prefix="/api/v1/search", tags=["search"])
 
+# Include auth routes (W9: JWT Authentication)
+from app.api.endpoints import auth as auth_router
+app.include_router(auth_router.router, prefix="/api/v1")
+
 # Include analytics routes
 from app.api.endpoints import analytics
 app.include_router(analytics.router, prefix="/api/v1/analytics", tags=["analytics"])
