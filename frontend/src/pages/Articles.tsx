@@ -88,7 +88,7 @@ export default function Articles() {
                             <div className="relative group min-w-[160px]">
                                 <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
                                 <select
-                                    className="w-full pl-10 pr-8 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-cosmic-500/50 text-white appearance-none transition-all font-medium cursor-pointer"
+                                    className="w-full pl-10 pr-8 py-3 bg-[#0d1117] border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-cosmic-500/50 text-gray-200 appearance-none transition-all font-medium cursor-pointer"
                                     value={category}
                                     onChange={(e) => {
                                         setCategory(e.target.value)
@@ -105,7 +105,7 @@ export default function Articles() {
                             <div className="relative group min-w-[160px]">
                                 <Tag className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
                                 <select
-                                    className="w-full pl-10 pr-8 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-cosmic-500/50 text-white appearance-none transition-all font-medium cursor-pointer"
+                                    className="w-full pl-10 pr-8 py-3 bg-[#0d1117] border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-cosmic-500/50 text-gray-200 appearance-none transition-all font-medium cursor-pointer"
                                     value={source}
                                     onChange={(e) => {
                                         setSource(e.target.value)
@@ -251,8 +251,8 @@ export default function Articles() {
                                                         )
                                                     }}
                                                     className={`p-1.5 rounded-lg transition-colors ${isFavorite('article', article.id)
-                                                            ? 'text-red-400 bg-red-500/20'
-                                                            : 'text-gray-500 hover:text-red-400 hover:bg-red-500/10'
+                                                        ? 'text-red-400 bg-red-500/20'
+                                                        : 'text-gray-500 hover:text-red-400 hover:bg-red-500/10'
                                                         }`}
                                                 >
                                                     <Heart className={`w-4 h-4 ${isFavorite('article', article.id) ? 'fill-current' : ''}`} />

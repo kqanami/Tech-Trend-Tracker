@@ -57,7 +57,7 @@ export default function EmergingTrends() {
                     <div>
                         <label className="block text-sm text-gray-400 mb-2">Time Window (days)</label>
                         <select
-                            className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                            className="w-full px-4 py-2 bg-[#0d1117] border border-white/10 rounded-xl text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
                             value={days}
                             onChange={(e) => setDays(Number(e.target.value))}
                         >

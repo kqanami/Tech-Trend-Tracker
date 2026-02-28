@@ -167,3 +167,34 @@
 .spinner {
   animation: spin 1s linear infinite;
 }
+
+/* ── Global select / dropdown fix ────────────────────────────────────────── */
+/* Prevents white-text-on-white-background in native browser dropdowns        */
+select {
+  background-color: #0d1117 !important;
+  color: #e2e8f0 !important;
+  color-scheme: dark;
+}
+
+select option {
+  background-color: #111827 !important;
+  color: #e2e8f0 !important;
+}
+
+select option:hover,
+select option:focus,
+select option:checked {
+  background-color: #1e2d4d !important;
+  color: #ffffff !important;
+}
+
+/* Reusable utility class for consistent filter selects */
+.select-dark {
+  @apply bg-[#0d1117] text-gray-200 border border-white/10 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-cosmic-500/50 appearance-none cursor-pointer font-medium transition-all;
+  color-scheme: dark;
+}
+
+.select-dark option {
+  background-color: #111827;
+  color: #e2e8f0;
+}

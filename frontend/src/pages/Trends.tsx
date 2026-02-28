@@ -69,7 +69,7 @@ export default function Trends() {
                     <div className="relative group min-w-[200px]">
                         <BarChart3 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
                         <select
-                            className="w-full pl-10 pr-8 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 text-white appearance-none transition-all font-medium cursor-pointer"
+                            className="w-full pl-10 pr-8 py-3 bg-[#0d1117] border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 text-gray-200 appearance-none transition-all font-medium cursor-pointer"
                             value={category}
                             onChange={(e) => {
                                 setCategory(e.target.value)
