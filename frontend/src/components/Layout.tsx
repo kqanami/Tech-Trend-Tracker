@@ -52,7 +52,7 @@ export default function Layout({ children }: LayoutProps) {
     return (
         <div className="relative min-h-screen">
             {/* Header */}
-            <header className="sticky top-0 z-50 glass-dark border-b border-white/10">
+            <header className="sticky top-0 z-50 bg-space-950/95 border-b border-white/10" style={{ backdropFilter: 'blur(12px)' }}>
                 <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16 gap-4">
 
@@ -142,7 +142,7 @@ export default function Layout({ children }: LayoutProps) {
 
                 {/* Mobile Navigation */}
                 {mobileMenuOpen && (
-                    <div className="lg:hidden border-t border-white/10 glass-dark">
+                    <div className="lg:hidden border-t border-white/10 bg-space-950/95">
                         <nav className="px-4 py-4 grid grid-cols-2 gap-1.5">
                             {allNav.map((item) => {
                                 const isActive = location.pathname === item.href
@@ -173,7 +173,7 @@ export default function Layout({ children }: LayoutProps) {
             </main>
 
             {/* Footer */}
-            <footer className="relative z-10 mt-auto border-t border-white/10 glass-dark">
+            <footer className="relative z-10 mt-auto border-t border-white/10 bg-space-950/90">
                 <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     <div className="flex flex-col md:flex-row items-center justify-between">
                         <p className="text-gray-400 text-sm">

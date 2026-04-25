@@ -13,163 +13,106 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
+  @apply bg-white/10 rounded-full;
 }
 
-/* Glass morphism effect */
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-white/20;
+}
+
+/* Glass morphism — lightweight version */
 .glass {
   background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .glass-dark {
-  @apply bg-space-950/40 backdrop-blur-xl border border-white/5;
+  @apply bg-space-950/80 border border-white/5;
+  backdrop-filter: blur(12px);
 }
 
-/* Cosmic Card with depth */
+/* ── Cosmic Card (performance-optimized) ── */
 .cosmic-card {
-  @apply relative p-6 rounded-2xl border border-white/5 bg-white/5 backdrop-blur-xl transition-all duration-500;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  @apply relative p-6 rounded-2xl border border-white/5;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  transition: border-color 0.2s, background-color 0.2s, transform 0.2s;
 }
 
 .cosmic-card:hover {
-  @apply border-white/20 bg-white/10 shadow-cosmic;
-  transform: translateY(-4px);
-}
-
-/* Starfield effect */
-.stars-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
-  background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
-  overflow: hidden;
-}
-
-.star {
-  position: absolute;
-  background: white;
-  border-radius: 50%;
-  opacity: 0.5;
-  animation: shimmer linear infinite;
-}
-
-@keyframes shimmer {
-  0% {
-    opacity: 0.3;
-    transform: scale(1);
-  }
-
-  50% {
-    opacity: 1;
-    transform: scale(1.2);
-  }
-
-  100% {
-    opacity: 0.3;
-    transform: scale(1);
-  }
+  @apply border-white/15;
+  background: rgba(255, 255, 255, 0.07);
+  transform: translateY(-2px);
 }
 
 /* Premium Gradients */
 .gradient-text {
-  @apply bg-clip-text text-transparent bg-premium-gradient animate-shimmer bg-[length:200%_auto];
+  background: linear-gradient(to right, #6366f1, #a855f7, #ec4899, #a855f7, #6366f1);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer-text 5s linear infinite;
 }
 
 .bg-premium-gradient {
-  background: linear-gradient(to right,
-      #6366f1,
-      #a855f7,
-      #ec4899,
-      #a855f7,
-      #6366f1);
+  background: linear-gradient(to right, #6366f1, #a855f7, #ec4899, #a855f7, #6366f1);
 }
 
 @keyframes shimmer-text {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  100% {
-    background-position: 200% 50%;
-  }
-}
-
-.animate-shimmer {
-  animation: shimmer-text 5s linear infinite;
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
 }
 
 .bg-cosmic-glow {
   background: radial-gradient(circle at center, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
 }
 
+/* Star shimmer — lightweight */
+@keyframes shimmer {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.7; }
+}
+
 @keyframes float {
-  0% {
-    transform: translateY(0px) rotate(0deg);
-  }
-
-  50% {
-    transform: translateY(-10px) rotate(1deg);
-  }
-
-  100% {
-    transform: translateY(0px) rotate(0deg);
-  }
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
 }
 
 .animate-float {
   animation: float 6s ease-in-out infinite;
 }
 
-/* Animated background */
-@keyframes cosmic-bg {
-
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
+/* Cosmic background drift — reduced complexity */
+@keyframes cosmic-drift {
+  from { background-position: 0 0; }
+  to { background-position: 500px 500px; }
 }
 
-.cosmic-bg-animated {
-  background-size: 200% 200%;
-  animation: cosmic-bg 15s ease infinite;
+.animate-cosmic-drift {
+  animation: cosmic-drift 120s linear infinite;
 }
 
 /* Button styles */
 .btn-cosmic {
-  @apply px-6 py-3 bg-cosmic-gradient text-white rounded-lg font-semibold;
-  @apply transition-all duration-300 hover:shadow-cosmic;
+  @apply px-6 py-3 bg-cosmic-gradient text-white rounded-lg font-semibold transition-colors duration-200;
 }
 
 .btn-nebula {
-  @apply px-6 py-3 bg-nebula-gradient text-white rounded-lg font-semibold;
-  @apply transition-all duration-300 hover:shadow-nebula;
+  @apply px-6 py-3 bg-nebula-gradient text-white rounded-lg font-semibold transition-colors duration-200;
 }
 
 /* Loading spinner */
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .spinner {
   animation: spin 1s linear infinite;
 }
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 /* ── Global select / dropdown fix ────────────────────────────────────────── */
-/* Prevents white-text-on-white-background in native browser dropdowns        */
 select {
   background-color: #0d1117 !important;
   color: #e2e8f0 !important;
@@ -188,13 +131,66 @@ select option:checked {
   color: #ffffff !important;
 }
 
-/* Reusable utility class for consistent filter selects */
 .select-dark {
-  @apply bg-[#0d1117] text-gray-200 border border-white/10 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-cosmic-500/50 appearance-none cursor-pointer font-medium transition-all;
+  @apply bg-[#0d1117] text-gray-200 border border-white/10 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-cosmic-500/50 appearance-none cursor-pointer font-medium;
   color-scheme: dark;
+  transition: border-color 0.15s;
 }
 
 .select-dark option {
   background-color: #111827;
   color: #e2e8f0;
+}
+
+/* ── Stagger animation (limited to first 6 children for perf) ── */
+.stagger-children > * {
+  animation: stagger-in 0.3s ease-out both;
+}
+.stagger-children > *:nth-child(1) { animation-delay: 0.03s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.06s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.09s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.12s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.18s; }
+
+@keyframes stagger-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Better prose readability */
+.prose-dark {
+  @apply text-gray-300 leading-relaxed text-[15px];
+}
+
+/* Input focus ring */
+input:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .cosmic-card {
+    @apply p-4 rounded-xl;
+  }
+  h1 { @apply text-3xl !important; }
+  h2 { @apply text-xl !important; }
+
+  /* Disable hover transforms on touch devices */
+  .cosmic-card:hover {
+    transform: none;
+  }
+}
+
+/* Scrollbar for custom containers */
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { @apply bg-white/10 rounded-full; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { @apply bg-white/20; }
+
+/* ── Performance: GPU hints ── */
+.will-change-transform {
+  will-change: transform;
 }
